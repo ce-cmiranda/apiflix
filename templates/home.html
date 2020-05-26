@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+<title>{% block title %}Filter Options{% endblock %}</title>
+{% block body %}
+<div class="jumbotron">
+    <h1 class="display-4">Bem-vindo ao APIFLIX!</h1>
+    <p class="lead">Aqui você consegue informações sobre filmes através de filtros e também ranqueamento</p>
+    <hr class="my-4">
+    <p>O que você está buscando hoje?</p>
+    <div class="container">
+        <div class="col-sm-3">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    <h3>Filtros</h3>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><a class="btn btn-primary btn-lg btn-block" href="/filter/country/">País</a></li>
+                    <li class="list-group-item"><a class="btn btn-primary btn-lg btn-block" href="#">Data</a></li>
+                    <li class="list-group-item"><a class="btn btn-primary btn-lg btn-block" href="#">Gênero</a></li>
+                </ul>
+
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    <h3>Filtros</h3>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><a class="btn btn-primary btn-lg btn-block" href="#">País</a></li>
+                    <li class="list-group-item"><a class="btn btn-primary btn-lg btn-block" href="#">Data</a></li>
+                    <li class="list-group-item"><a class="btn btn-primary btn-lg btn-block" href="#">Gênero</a></li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
