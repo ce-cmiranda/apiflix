@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, json
 
 import pandas as pd
 import numpy as np
@@ -19,15 +19,21 @@ def import_files():
     return movies
 
 
-def filter_by_country(country, df):
-    df = df[df['country'].notnull()]
-    df = df[df['country'].str.contains(country)]
+def filter_by_country(country, df, column):
+    df = df[df[column].notnull()]
+    df = df[df[column].str.contains(country)]
     return df
+
 
 def filter_by_date(min_date, max_date, df):
     df = df[df['date_published'].notnull()]
     df = df[(df['date_published']>=min_date) & (df['date_published']<=max_date)]
     return df
+
+
+def rank_by_criteria(df, criteria):
+    rank = df[['title', criteria]].sort_values(by=criteria, ascending = False)
+    return rank
 
 # cl_genre = movies.loc[:, ['title', 'genre', 'avg_vote', 'votes']]
 # cl_genre['genre'] = cl_genre['genre'].str.split(',')
@@ -41,31 +47,44 @@ def filter_by_date(min_date, max_date, df):
 app = Flask(__name__)
 
 
-# @app.route('/')
-# def index():
-#      movies = import_files()
-#      # movies = movies.head(5)
-#      # movies = movies.to_dict(orient='index')
-#      # movies = list(movies.values())
-#      # return movies[0]
-#
-#      result = filter_by_country('Germany', movies).iloc[0:10,:].to_dict(orient='index')
-#      return result
-
 @app.route('/')
 def filter_page():
     return render_template('/home.html')
 
+@app.route('/rank/<criteria>')
+def rank_page(criteria):
+    number = 10
+    result = import_files()
+
+    result = rank_by_criteria(result, criteria)
+    result = result.iloc[0:number, :].to_json(orient='index')
+    result = json.loads(result)
+    firstsubkey = next(iter(result.values()))
+    position = [i+1 for i in range(number)]
+    print(position)
+    return render_template('/ranking.html', result=result, firstsubkey=firstsubkey, position = position)
+    # return result["tt10914342"]
+
 
 @app.route('/filter/country/', methods=["GET", "POST"])
 def filter_by_country_page():
-    movies = import_files()
+    result = import_files()
     if request.method == "POST":
         country_name = request.form["country"]
+        title = request.form["title"]
+        cast = request.form["cast"]
+        genre = request.form["genre"]
         min_date = request.form["date_min"]
         max_date = request.form["date_max"]
 
-        result = filter_by_country(country_name, movies)
+        if country_name != "":
+            result = filter_by_country(country_name, result, "country")
+        if title != "":
+            result = filter_by_country(title, result, "title")
+        if cast != "":
+            result = filter_by_country(cast, result, "actors")
+        if genre!="":
+            result = filter_by_country(genre, result, "genre")
 
         if min_date != "" and max_date != "":
             result = filter_by_date(min_date, max_date, result)

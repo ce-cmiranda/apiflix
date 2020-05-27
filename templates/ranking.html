@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+<title>{% block title %}Rank{% endblock %}</title>
+{% block body %}
+
+<div class="container">
+
+        <table class="table">
+        <thead class="thead-dark">
+
+        <tr>
+<!--            <th scope="col">Rank</th>-->
+            {% for key in firstsubkey %}
+            <th scope="col">{{key}}</th>
+            {% endfor %}
+        </tr>
+
+        </thead>
+        <tbody>
+        {% for key in result%}
+        <tr>
+            {% for subkey in result[key] %}
+            <td>{{result[key][subkey]}}</td>
+
+
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}
