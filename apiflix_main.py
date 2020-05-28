@@ -11,8 +11,9 @@ from werkzeug.utils import redirect
 
 def import_files():
     file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/IMDb%20movies.csv'
-    file_path_names = 'databases/IMDb names.csv'
-    file_path_ratings = 'databases/IMDb ratings.csv'
+    # file_path_movies = 'databases/IMDb movies.csv'
+    # file_path_names = 'databases/IMDb names.csv'
+    # file_path_ratings = 'databases/IMDb ratings.csv'
 
     movies = pd.read_csv(file_path_movies, index_col='imdb_title_id', parse_dates=['date_published'])
     # names = pd.read_csv(file_path_names, index_col='imdb_name_id', parse_dates=True)
