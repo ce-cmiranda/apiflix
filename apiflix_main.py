@@ -102,6 +102,14 @@ def filter_by_country_page():
 
     return render_template('/filter_country.html', result=result)
 
+@app.route('/api/filter/', methods=["GET", "POST"])
+def filter_api():
+    result = import_files()
+
+    # result = result.iloc[0:10, :].to_dict(orient='index')
+    # result = result.iloc[0:10, :].to_dict(orient='index')
+
+    return result
 
 if __name__ == '__main__':
     # app.run(debug=True)
