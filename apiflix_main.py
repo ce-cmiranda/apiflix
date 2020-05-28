@@ -91,11 +91,11 @@ def filter_by_country_page():
         if min_date != "" and max_date != "":
             result = filter_by_date(min_date, max_date, result)
 
-        result = result.iloc[0:per_page, :].to_dict(orient='index')
+        result = result.iloc[0:10, :].to_dict(orient='index')
         num_results = len(result)
         return render_template('/filter_country.html', result=result, num_results=num_results)
 
-    result = result.iloc[0:, :].to_dict(orient='index')
+    result = result.iloc[0:10, :].to_dict(orient='index')
     # result = result.iloc[0:10, :].to_dict(orient='index')
 
 
