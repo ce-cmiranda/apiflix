@@ -14,15 +14,12 @@
             <th scope="col">{{key}}</th>
             {% endfor %}
         </tr>
-
         </thead>
         <tbody>
         {% for key in result%}
         <tr>
             {% for subkey in result[key] %}
             <td>{{result[key][subkey]}}</td>
-
-
             {% endfor %}
         </tr>
         {% endfor %}

@@ -33,6 +33,7 @@
     <table class="table">
         <thead class="thead-dark">
         <tr>
+            <th>#</th>
             <th scope="col">Movie Title</th>
             <th scope="col">Published Date</th>
             <th scope="col">Country</th>
@@ -45,6 +46,7 @@
         <tbody>
         {% for key in result%}
         <tr>
+            <td>{{ loop.index + pagination.skip }}</td>
             <td>{{result[key].title}}</td>
             <td>{{result[key].date_published}}</td>
             <td>{{result[key].country}}</td>
@@ -56,6 +58,7 @@
         {% endfor %}
         </tbody>
     </table>
+    {{ pagination.links }}
     {% endif %}
 </div>
 {% endblock %}

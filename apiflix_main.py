@@ -1,4 +1,7 @@
-from flask import Flask, render_template, request, json
+import os
+
+from flask import Flask, request, json, render_template
+from flask_paginate import Pagination, get_page_parameter
 
 import pandas as pd
 import numpy as np
@@ -48,14 +51,14 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def filter_page():
+def home_page():
     return render_template('/home.html')
+
 
 @app.route('/rank/<criteria>')
 def rank_page(criteria):
     number = 10
     result = import_files()
-
     result = rank_by_criteria(result, criteria)
     result = result.iloc[0:number, :].to_json(orient='index')
     result = json.loads(result)
@@ -68,6 +71,7 @@ def rank_page(criteria):
 
 @app.route('/filter/country/', methods=["GET", "POST"])
 def filter_by_country_page():
+    page, per_page, offset = request.args.get(get_page_parameter(), type=int, default=1)
     result = import_files()
     if request.method == "POST":
         country_name = request.form["country"]
@@ -89,14 +93,23 @@ def filter_by_country_page():
         if min_date != "" and max_date != "":
             result = filter_by_date(min_date, max_date, result)
 
-        result = result.iloc[0:10, :].to_dict(orient='index')
+        result = result.iloc[0:per_page, :].to_dict(orient='index')
         num_results = len(result)
         return render_template('/filter_country.html', result=result, num_results=num_results)
 
-    result = movies.iloc[0:10, :].to_dict(orient='index')
+    result = result.iloc[0:, :].to_dict(orient='index')
+    # result = result.iloc[0:10, :].to_dict(orient='index')
 
-    return render_template('/filter_country.html', result=result)
+    # page = request.args.get(get_page_parameter(), type=int, default=1)
+    print(page)
+    pagination = Pagination(page=page, per_page_parameter=per_page, total=len(result),
+               css_framework='bootstrap4')
+
+
+    return render_template('/filter_country.html', result=result, pagination=pagination)
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
