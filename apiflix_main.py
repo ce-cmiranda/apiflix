@@ -10,7 +10,7 @@ from werkzeug.utils import redirect
 
 
 def import_files():
-    file_path_movies = 'databases/iMDb movies.csv'
+    file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/IMDb%20movies.csv'
     file_path_names = 'databases/IMDb names.csv'
     file_path_ratings = 'databases/IMDb ratings.csv'
 
