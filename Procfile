@@ -1,1 +1,1 @@
-web: gunicorn app:app
+web: python apiflix_main.py

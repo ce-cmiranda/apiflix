@@ -1,7 +1,6 @@
 import os
 
 from flask import Flask, request, json, render_template
-from flask_paginate import Pagination, get_page_parameter
 
 import pandas as pd
 import numpy as np
@@ -71,7 +70,6 @@ def rank_page(criteria):
 
 @app.route('/filter/country/', methods=["GET", "POST"])
 def filter_by_country_page():
-    page, per_page, offset = request.args.get(get_page_parameter(), type=int, default=1)
     result = import_files()
     if request.method == "POST":
         country_name = request.form["country"]
@@ -100,13 +98,8 @@ def filter_by_country_page():
     result = result.iloc[0:, :].to_dict(orient='index')
     # result = result.iloc[0:10, :].to_dict(orient='index')
 
-    # page = request.args.get(get_page_parameter(), type=int, default=1)
-    print(page)
-    pagination = Pagination(page=page, per_page_parameter=per_page, total=len(result),
-               css_framework='bootstrap4')
 
-
-    return render_template('/filter_country.html', result=result, pagination=pagination)
+    return render_template('/filter_country.html', result=result)
 
 
 if __name__ == '__main__':
