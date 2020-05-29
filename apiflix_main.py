@@ -10,8 +10,8 @@ from werkzeug.utils import redirect
 
 
 def import_files():
-    file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/IMDb%20movies.csv'
-    # file_path_movies = 'databases/IMDb movies.csv'
+    # file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/IMDb%20movies.csv'
+    file_path_movies = 'databases/IMDb movies.csv'
     # file_path_names = 'databases/IMDb names.csv'
     # file_path_ratings = 'databases/IMDb ratings.csv'
 
@@ -107,52 +107,64 @@ def filter_by_country_page():
 def filter_api():
     result = import_files()
 
-    data = json.loads(request.data)
+    if request.method == "POST":
+        data = json.loads(request.data)
 
-    try:
-        country_name = data["country"]
-    except:
-        country_name = ""
-    try:
-        title = data["title"]
-    except:
-        title = ""
-    try:
-        cast = data["cast"]
-    except:
-        cast = ""
-    try:
-        genre = data["genre"]
-    except:
-        genre = ""
-    try:
-        min_date = data["date_min"]
-    except:
-        min_date = ""
-    try:
-        max_date = data["date_max"]
-    except:
-        max_date = ""
+        try:
+            country_name = data["country"]
+        except:
+            country_name = ""
+        try:
+            title = data["title"]
+        except:
+            title = ""
+        try:
+            cast = data["cast"]
+        except:
+            cast = ""
+        try:
+            genre = data["genre"]
+        except:
+            genre = ""
+        try:
+            min_date = data["date_min"]
+        except:
+            min_date = ""
+        try:
+            max_date = data["date_max"]
+        except:
+            max_date = ""
 
-    if country_name != "":
-        result = filter_by_country(country_name, result, "country")
-    if title != "":
-        result = filter_by_country(title, result, "title")
-    if cast != "":
-        result = filter_by_country(cast, result, "actors")
-    if genre != "":
-        result = filter_by_country(genre, result, "genre")
+        if country_name != "":
+            result = filter_by_country(country_name, result, "country")
+        if title != "":
+            result = filter_by_country(title, result, "title")
+        if cast != "":
+            result = filter_by_country(cast, result, "actors")
+        if genre != "":
+            result = filter_by_country(genre, result, "genre")
 
-    if min_date != "" and max_date != "":
-        result = filter_by_date(min_date, max_date, result)
+        if min_date != "" and max_date != "":
+            result = filter_by_date(min_date, max_date, result)
 
-    # result = result.to_dict(orient='index')
-    result = result.iloc[0:100, :].to_json(orient='index')
-
+        # result = result.to_dict(orient='index')
+        result = filter_by_country("Germany", result, "country")
+        result = filter_by_country("Drama", result, "genre")
+        result = result.iloc[0:100, :].to_json(orient='index')
+    else:
+        message = result.iloc[0:100, :].to_json(orient='index')
+        result = """Opções de parâmetros:<br>"country", "title", "actors", "genre", "min_date", "max_date"
+        <br><br>
+        Exemplo:<br>
+        {"country": "Germany", "genre": "Drama"}
+        <br><br>
+        Resultados esperados:
+        <br><br>
+        %s.""" % message
     return result
 
 
 if __name__ == '__main__':
-    # app.run(debug=True)
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
+    # port = int(os.environ.get("PORT", 5000))
+    # app.run(host='0.0.0.0', port=port)
