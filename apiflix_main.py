@@ -106,8 +106,8 @@ def filter_by_country_page():
 def filter_api():
     result = import_files()
 
-    result = result.to_dict(orient='index')
-    # result = result.iloc[0:10, :].to_dict(orient='index')
+    # result = result.to_dict(orient='index')
+    result = result.iloc[0:100, :].to_dict(orient='index')
 
     return result
 
