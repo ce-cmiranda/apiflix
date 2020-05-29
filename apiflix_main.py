@@ -106,10 +106,11 @@ def filter_by_country_page():
 def filter_api():
     result = import_files()
 
+    data = request.data
     # result = result.to_dict(orient='index')
     result = result.iloc[0:100, :].to_json(orient='index')
 
-    return result
+    return data
 
 
 if __name__ == '__main__':
