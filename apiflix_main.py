@@ -10,8 +10,8 @@ from werkzeug.utils import redirect
 
 
 def import_files():
-    # file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/IMDb%20movies.csv'
-    file_path_movies = 'databases/IMDb movies.csv'
+    file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/IMDb%20movies.csv'
+    # file_path_movies = 'databases/IMDb movies.csv'
     # file_path_names = 'databases/IMDb names.csv'
     # file_path_ratings = 'databases/IMDb ratings.csv'
 
@@ -165,6 +165,6 @@ def filter_api():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    # port = int(os.environ.get("PORT", 5000))
-    # app.run(host='0.0.0.0', port=port)
+    # app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
