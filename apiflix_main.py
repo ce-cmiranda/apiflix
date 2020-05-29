@@ -107,7 +107,7 @@ def filter_api():
     result = import_files()
 
     # result = result.to_dict(orient='index')
-    result = result.iloc[0:100, :].to_dict(orient='index')
+    result = result.iloc[0:100, :].to_json(orient='index')
 
     return result
 
