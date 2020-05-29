@@ -106,7 +106,7 @@ def filter_by_country_page():
 def filter_api():
     result = import_files()
 
-    data = request.data
+    data = request.data['actors']
     # result = result.to_dict(orient='index')
     result = result.iloc[0:100, :].to_json(orient='index')
 
