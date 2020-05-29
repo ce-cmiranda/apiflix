@@ -146,8 +146,6 @@ def filter_api():
     if min_date != "" and max_date != "":
         result = filter_by_date(min_date, max_date, result)
 
-    result = result.iloc[0:10, :].to_dict(orient='index')
-
     # result = result.to_dict(orient='index')
     result = result.iloc[0:100, :].to_json(orient='index')
 
