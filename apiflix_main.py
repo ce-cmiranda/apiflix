@@ -30,13 +30,14 @@ def filter_by_country(country, df, column):
 
 def filter_by_date(min_date, max_date, df):
     df = df[df['date_published'].notnull()]
-    df = df[(df['date_published']>=min_date) & (df['date_published']<=max_date)]
+    df = df[(df['date_published'] >= min_date) & (df['date_published'] <= max_date)]
     return df
 
 
 def rank_by_criteria(df, criteria):
-    rank = df[['title', criteria]].sort_values(by=criteria, ascending = False)
+    rank = df[['title', criteria]].sort_values(by=criteria, ascending=False)
     return rank
+
 
 # cl_genre = movies.loc[:, ['title', 'genre', 'avg_vote', 'votes']]
 # cl_genre['genre'] = cl_genre['genre'].str.split(',')
@@ -45,7 +46,7 @@ def rank_by_criteria(df, criteria):
 # cl_genre['genre'] = cl_genre['genre'].str.lstrip()
 # genre_rank = cl_genre.groupby('genre').mean().avg_vote
 # genre_rank.sort_values(axis = 0 ,ascending = False)
-#New comment
+# New comment
 
 app = Flask(__name__)
 
@@ -63,9 +64,9 @@ def rank_page(criteria):
     result = result.iloc[0:number, :].to_json(orient='index')
     result = json.loads(result)
     firstsubkey = next(iter(result.values()))
-    position = [i+1 for i in range(number)]
+    position = [i + 1 for i in range(number)]
     print(position)
-    return render_template('/ranking.html', result=result, firstsubkey=firstsubkey, position = position)
+    return render_template('/ranking.html', result=result, firstsubkey=firstsubkey, position=position)
     # return result["tt10914342"]
 
 
@@ -86,7 +87,7 @@ def filter_by_country_page():
             result = filter_by_country(title, result, "title")
         if cast != "":
             result = filter_by_country(cast, result, "actors")
-        if genre!="":
+        if genre != "":
             result = filter_by_country(genre, result, "genre")
 
         if min_date != "" and max_date != "":
@@ -99,8 +100,8 @@ def filter_by_country_page():
     result = result.iloc[0:10, :].to_dict(orient='index')
     # result = result.iloc[0:10, :].to_dict(orient='index')
 
-
     return render_template('/filter_country.html', result=result)
+
 
 @app.route('/api/filter/', methods=["GET", "POST"])
 def filter_api():
@@ -108,22 +109,41 @@ def filter_api():
 
     data = json.loads(request.data)
 
-    country_name = data["country"] or ""
-    title = data["title"] or ""
-    cast = data["cast"] or ""
-    genre = data["genre"] or ""
-    min_date = data["date_min"] or ""
-    max_date = data["date_max"] or ""
+    try:
+        country_name = data["country"]
+    except:
+        country_name = ""
+    try:
+        title = data["title"]
+    except:
+        title = ""
+    try:
+        cast = data["cast"]
+    except:
+        cast = ""
+    try:
+        genre = data["genre"]
+    except:
+        genre = ""
+    try:
+        min_date = data["date_min"]
+    except:
+        min_date = ""
+    try:
+        max_date = data["date_max"]
+    except:
+        max_date = ""
 
     if country_name != "":
         result = filter_by_country(country_name, result, "country")
-    if title:
+    if title != "":
         result = filter_by_country(title, result, "title")
-    if cast:
+    if cast != "":
         result = filter_by_country(cast, result, "actors")
-    if genre:
+    if genre != "":
         result = filter_by_country(genre, result, "genre")
-    if min_date and max_date:
+
+    if min_date != "" and max_date != "":
         result = filter_by_date(min_date, max_date, result)
 
     result = result.iloc[0:10, :].to_dict(orient='index')
