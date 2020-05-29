@@ -107,7 +107,27 @@ def filter_api():
     result = import_files()
 
     data = json.loads(request.data)
-    data = data['actors']
+
+    country_name = data["country"]
+    title = data["title"]
+    cast = data["cast"]
+    genre = data["genre"]
+    min_date = data["date_min"]
+    max_date = data["date_max"]
+
+    if country_name:
+        result = filter_by_country(country_name, result, "country")
+    if title:
+        result = filter_by_country(title, result, "title")
+    if cast:
+        result = filter_by_country(cast, result, "actors")
+    if genre:
+        result = filter_by_country(genre, result, "genre")
+    if min_date and max_date:
+        result = filter_by_date(min_date, max_date, result)
+
+    result = result.iloc[0:10, :].to_dict(orient='index')
+
     # result = result.to_dict(orient='index')
     result = result.iloc[0:100, :].to_json(orient='index')
 
