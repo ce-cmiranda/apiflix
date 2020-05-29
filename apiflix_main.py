@@ -108,14 +108,14 @@ def filter_api():
 
     data = json.loads(request.data)
 
-    country_name = data["country"]
-    title = data["title"]
-    cast = data["cast"]
-    genre = data["genre"]
-    min_date = data["date_min"]
-    max_date = data["date_max"]
+    country_name = data["country"] or ""
+    title = data["title"] or ""
+    cast = data["cast"] or ""
+    genre = data["genre"] or ""
+    min_date = data["date_min"] or ""
+    max_date = data["date_max"] or ""
 
-    if country_name:
+    if country_name != "":
         result = filter_by_country(country_name, result, "country")
     if title:
         result = filter_by_country(title, result, "title")
