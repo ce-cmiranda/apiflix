@@ -151,7 +151,7 @@ def filter_api():
     # result = result.to_dict(orient='index')
     result = result.iloc[0:100, :].to_json(orient='index')
 
-    return data
+    return result
 
 
 if __name__ == '__main__':
