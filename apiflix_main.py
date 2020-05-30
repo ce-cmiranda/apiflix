@@ -1,9 +1,8 @@
 import os
 
-from flask import Flask, request, json, render_template
+from flask import Flask, request, json, render_template, make_response
 
 import pandas as pd
-
 
 def import_files():
     # file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/IMDb%20movies.csv'
@@ -61,6 +60,7 @@ app = Flask(__name__)
 def home_page():
     return render_template('/home.html')
 
+
 @app.route('/rank/qtd/<criteria>/')
 @app.route('/rank/qtd/<criteria>/<int:page>')
 def rank_page_qtd(criteria, page = 1):
@@ -70,9 +70,11 @@ def rank_page_qtd(criteria, page = 1):
     result = import_files()
     result = rank_by_param_movie_qtd(result, criteria)
     result = result[initial:final]
+    max_value = result[0:1][0]
+    title = "Ranking de Qtd por "+criteria
     result = result.to_dict()
 
-    return render_template('/ranking_qtd.html', result=result, criteria=criteria, initial=initial)
+    return render_template('/ranking_qtd.html', result=result, criteria=criteria, initial=initial, max_value=max_value, title=title)
 
 
 @app.route('/rank/<param>/<criteria>/')
@@ -90,10 +92,12 @@ def rank_page_param(param, criteria, page=1):
     return render_template('/ranking.html', result=result, firstsubkey=firstsubkey, initial=initial)
 
 
-
-
 @app.route('/filter/', methods=["GET", "POST"])
-def filter_by_country_page():
+@app.route('/filter/<int:page>/', methods=["GET", "POST"])
+def filter(page=1):
+    per_page = 10
+    initial = (page-1)*per_page
+    final = initial + per_page
     result = import_files()
     if request.method == "POST":
         country_name = request.form["country"]
@@ -115,11 +119,11 @@ def filter_by_country_page():
         if min_date != "" and max_date != "":
             result = filter_by_date(min_date, max_date, result)
 
-        result = result.iloc[0:10, :].to_dict(orient='index')
+        result = result.iloc[initial:final, :].to_dict(orient='index')
         num_results = len(result)
         return render_template('/filter.html', result=result, num_results=num_results)
 
-    result = result.iloc[0:10, :].to_dict(orient='index')
+    result = result.iloc[initial:final, :].to_dict(orient='index')
     # result = result.iloc[0:10, :].to_dict(orient='index')
 
     return render_template('/filter.html', result=result)
@@ -182,6 +186,27 @@ def filter_api():
         <br><br>
         %s.""" % message
     return result
+
+
+# @app.route('/plot.png')
+# def plot_png(df, criteria):
+#     fig = create_figure(df, criteria)
+#     output = io.BytesIO()
+#     FigureCanvas(fig).print_png(output)
+#     plt.savefig('/static/images/new_plot.png')
+#     return Response(output.getvalue(), mimetype='image/png')
+
+#
+# def create_figure(df, criteria):
+#     fig = Figure()
+#     my_plot = df.plot.bar()
+#     my_plot.spines['top'].set_visible(False)
+#     my_plot.spines['right'].set_visible(False)
+#     plt.title("Ranking de Qtd por " + criteria, fontdict= {'fontsize': 18})
+#     for index, value in enumerate(df):
+#         plt.text(index - 0.4, value + 1000, s=f'{value}')
+#     return fig
+
 
 
 if __name__ == '__main__':
