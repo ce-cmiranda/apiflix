@@ -112,13 +112,13 @@ def filter(page=1):
         max_date = request.form["date_max"]
 
         if country_name != "":
-            result = filter_by_string(country_name, result, "country")
+            result = filter_by_string(country_name, result, "País")
         if title != "":
-            result = filter_by_string(title, result, "title")
+            result = filter_by_string(title, result, "Título")
         if cast != "":
-            result = filter_by_string(cast, result, "actors")
+            result = filter_by_string(cast, result, "Atores")
         if genre != "":
-            result = filter_by_string(genre, result, "genre")
+            result = filter_by_string(genre, result, "Gênero")
 
         if min_date != "" and max_date != "":
             result = filter_by_date(min_date, max_date, result)
@@ -184,7 +184,7 @@ def filter_api():
         result = """Opções de parâmetros:<br>"country", "title", "actors", "genre", "min_date", "max_date"
         <br><br>
         Exemplo:<br>
-        {"country": "Germany", "genre": "Drama"}
+        {"País": "Germany", "Gênero": "Drama"}
         <br><br>
         Resultados esperados:
         <br><br>
@@ -193,5 +193,5 @@ def filter_api():
 
 if __name__ == '__main__':
     # app.run(debug=True)
-    port = int(os.environ.get("PORT", 5000))
+    # port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
