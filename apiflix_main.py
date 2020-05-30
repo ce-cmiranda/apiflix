@@ -6,9 +6,9 @@ import pandas as pd
 
 def import_files():
     # file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/IMDb%20movies.csv'
-    file_path_movies = 'databases/IMDb movies.csv'
-    # file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/movies_clean.csv'
-    file_path_movies = 'databases/movies_clean.csv'
+    # file_path_movies = 'databases/IMDb movies.csv'
+    file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/movies_clean.csv'
+    # file_path_movies = 'databases/movies_clean.csv'
 
     movies = pd.read_csv(file_path_movies, index_col='imdb_title_id', parse_dates=['Data de Publicação'],
                                   dtype={'Ano': 'str'})
@@ -192,6 +192,6 @@ def filter_api():
     return result
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    # port = int(os.environ.get("PORT", 5000))
-    # app.run(host='0.0.0.0', port=port)
+    # app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
