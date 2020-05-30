@@ -10,18 +10,19 @@
 
         <tr>
             <th scope="col">Rank</th>
-            {% for key in firstsubkey %}
-            <th scope="col">{{key}}</th>
-            {% endfor %}
+
+            <th scope="col">{{criteria}}</th>
+            <th scope="col">Qtd</th>
+
         </tr>
         </thead>
         <tbody>
         {% for key in result%}
         <tr>
             <td>{{ loop.index + initial }}</td>
-            {% for subkey in result[key] %}
-            <td>{{result[key][subkey]}}</td>
-            {% endfor %}
+            <td>{{key}}</td>
+            <td>{{result[key]}}</td>
+
         </tr>
         {% endfor %}
         </tbody>
