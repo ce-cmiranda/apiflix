@@ -7,14 +7,12 @@ import pandas as pd
 def import_files():
     # file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/IMDb%20movies.csv'
     file_path_movies = 'databases/IMDb movies.csv'
-    # file_path_names = 'databases/IMDb names.csv'
-    # file_path_ratings = 'databases/IMDb ratings.csv'
+    # file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/movies_clean.csv'
+    file_path_movies = 'databases/movies_clean.csv'
 
-    movies = pd.read_csv(file_path_movies, index_col='imdb_title_id', parse_dates=['date_published'],
-                                  dtype={'year': 'str'})
-
-    # names = pd.read_csv(file_path_names, index_col='imdb_name_id', parse_dates=True)
-    # ratings = pd.read_csv(file_path_ratings, index_col='imdb_title_id', parse_dates=True)
+    movies = pd.read_csv(file_path_movies, index_col='imdb_title_id', parse_dates=['Data de Publicação'],
+                                  dtype={'Ano': 'str'})
+    movies["percentual de lucro"] = movies["percentual de lucro"]*100
 
     return movies
 
@@ -26,8 +24,8 @@ def filter_by_string(string, df, column):
 
 
 def filter_by_date(min_date, max_date, df):
-    df = df[df['date_published'].notnull()]
-    df = df[(df['date_published'] >= min_date) & (df['date_published'] <= max_date)]
+    df = df[df['Data de Publicação'].notnull()]
+    df = df[(df['Data de Publicação'] >= min_date) & (df['Data de Publicação'] <= max_date)]
     return df
 
 
@@ -42,7 +40,7 @@ def rank_by_param_movie_qtd(df, criteria):
 
 
 def rank_param_by_criteria(df, param, criteria, qtd_votes=100000):
-    df = df[[param, criteria]][df['votes'] >= qtd_votes]
+    df = df[[param, criteria]][df['Quantidade de Votos'] >= qtd_votes]
     df = df[df[param].notnull()]
 
     df[param] = df[param].str.split(', ')
@@ -60,6 +58,10 @@ app = Flask(__name__)
 def home_page():
     return render_template('/home.html')
 
+@app.route('/rank/<criteria>/')
+def home_rank(criteria):
+    return render_template('/home_rank.html', criteria=criteria)
+
 
 @app.route('/rank/qtd/<criteria>/')
 @app.route('/rank/qtd/<criteria>/<int:page>')
@@ -71,14 +73,14 @@ def rank_page_qtd(criteria, page = 1):
     result = rank_by_param_movie_qtd(result, criteria)
     result = result[initial:final]
     max_value = result[0:1][0]
-    title = "Ranking de Qtd por "+criteria
+    title = "Ranking de Qtd por " + criteria
     result = result.to_dict()
 
     return render_template('/ranking_qtd.html', result=result, criteria=criteria, initial=initial, max_value=max_value, title=title)
 
 
-@app.route('/rank/<param>/<criteria>/')
-@app.route('/rank/<param>/<criteria>/<int:page>')
+@app.route('/rank/<criteria>/<param>/')
+@app.route('/rank/<criteria>/<param>/<int:page>')
 def rank_page_param(param, criteria, page=1):
     per_page = 10
     initial = (page-1)*per_page
@@ -88,8 +90,10 @@ def rank_page_param(param, criteria, page=1):
     result = rank_param_by_criteria(result, param, criteria, qtd_votes)
     result = result.iloc[initial:final, :].to_dict(orient='index')
     firstsubkey = next(iter(result.values()))
+    max_value = firstsubkey[criteria]
 
-    return render_template('/ranking.html', result=result, firstsubkey=firstsubkey, initial=initial)
+    return render_template('/ranking.html', result=result, firstsubkey=firstsubkey, initial=initial,
+                           max_value=max_value)
 
 
 @app.route('/filter/', methods=["GET", "POST"])
@@ -186,28 +190,6 @@ def filter_api():
         <br><br>
         %s.""" % message
     return result
-
-
-# @app.route('/plot.png')
-# def plot_png(df, criteria):
-#     fig = create_figure(df, criteria)
-#     output = io.BytesIO()
-#     FigureCanvas(fig).print_png(output)
-#     plt.savefig('/static/images/new_plot.png')
-#     return Response(output.getvalue(), mimetype='image/png')
-
-#
-# def create_figure(df, criteria):
-#     fig = Figure()
-#     my_plot = df.plot.bar()
-#     my_plot.spines['top'].set_visible(False)
-#     my_plot.spines['right'].set_visible(False)
-#     plt.title("Ranking de Qtd por " + criteria, fontdict= {'fontsize': 18})
-#     for index, value in enumerate(df):
-#         plt.text(index - 0.4, value + 1000, s=f'{value}')
-#     return fig
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)

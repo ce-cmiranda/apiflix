@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+<title>{% block title %}Filter Options{% endblock %}</title>
+{% block style %}
+.linkbutton{
+margin: 5px;
+text-align: center;
+overflow-wrap: break-word;
+}
+{% endblock %}
+{% block body %}
+<div class="jumbotron">
+    <h1 class="display-4">Bem-vindo ao APIFLIX!</h1>
+    <p class="lead">Aqui você consegue informações sobre filmes através de filtros e também ranqueamento</p>
+    <hr class="my-4">
+    <p>O que você está buscando hoje?</p>
+    <div class="container">
+        <div class="row">
+            <a class="btn btn-success linkbutton" href="/rank/{{criteria}}/Atores">Ranking: {{criteria}} por Atores</a>
+            <a class="btn btn-success linkbutton" href="/rank/{{criteria}}/Ano">Ranking: {{criteria}} por Ano</a>
+            <a class="btn btn-success linkbutton" href="/rank/{{criteria}}/Gênero">Ranking: {{criteria}} por Gênero</a>
+            <a class="btn btn-success linkbutton" href="/rank/{{criteria}}/País">Ranking: {{criteria}} por País</a>
+            <a class="btn btn-success linkbutton" href="/rank/{{criteria}}/Idioma%20Original">Ranking: {{criteria}} por Idioma Original</a>
+            <a class="btn btn-success linkbutton" href="/rank/{{criteria}}/Diretor">Ranking: {{criteria}} por Diretor</a>
+            <a class="btn btn-success linkbutton" href="/rank/{{criteria}}/Escritor">Ranking: {{criteria}} por Escritor</a>
+            <a class="btn btn-success linkbutton" href="/rank/{{criteria}}/Produtora">Ranking: {{criteria}} por Produtora</a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

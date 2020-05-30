@@ -45,13 +45,13 @@
         <tbody>
         {% for key in result%}
         <tr>
-            <td>{{result[key].title}}</td>
-            <td>{{result[key].date_published}}</td>
-            <td>{{result[key].country}}</td>
-            <td>{{result[key].actors}}</td>
-            <td>{{result[key].genre}}</td>
-            <td>{{result[key].description}}</td>
-            <td>{{result[key].avg_vote}}</td>
+            <td>{{result[key].Título}}</td>
+            <td>{{result[key]["Data de Publicação"]}}</td>
+            <td>{{result[key]["País"]}}</td>
+            <td>{{result[key]["Atores"]}}</td>
+            <td>{{result[key]["Gênero"]}}</td>
+            <td>{{result[key]["Descrição"]}}</td>
+            <td>{{result[key]["Média de Nota"]}}</td>
         </tr>
         {% endfor %}
         </tbody>
