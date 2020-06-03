@@ -58,6 +58,7 @@ app = Flask(__name__)
 def home_page():
     return render_template('/home.html')
 
+
 @app.route('/rank/<criteria>/')
 def home_rank(criteria):
     return render_template('/home_rank.html', criteria=criteria)
@@ -128,7 +129,6 @@ def filter(page=1):
         return render_template('/filter.html', result=result, num_results=num_results)
 
     result = result.iloc[initial:final, :].to_dict(orient='index')
-    # result = result.iloc[0:10, :].to_dict(orient='index')
 
     return render_template('/filter.html', result=result)
 
@@ -166,13 +166,13 @@ def filter_api():
             max_date = ""
 
         if country_name != "":
-            result = filter_by_string(country_name, result, "country")
+            result = filter_by_string(country_name, result, "País")
         if title != "":
-            result = filter_by_string(title, result, "title")
+            result = filter_by_string(title, result, "Título")
         if cast != "":
-            result = filter_by_string(cast, result, "actors")
+            result = filter_by_string(cast, result, "Atores")
         if genre != "":
-            result = filter_by_string(genre, result, "genre")
+            result = filter_by_string(genre, result, "Gênero")
 
         if min_date != "" and max_date != "":
             result = filter_by_date(min_date, max_date, result)
@@ -181,7 +181,7 @@ def filter_api():
         result = result.iloc[0:100, :].to_json(orient='index')
     else:
         message = result.iloc[0:100, :].to_json(orient='index')
-        result = """Opções de parâmetros:<br>"country", "title", "actors", "genre", "min_date", "max_date"
+        result = """Opções de parâmetros:<br>"País", "Título", "Atores", "Gênero", "min_date", "max_date"
         <br><br>
         Exemplo:<br>
         {"País": "Germany", "Gênero": "Drama"}
@@ -193,6 +193,6 @@ def filter_api():
 
 
 if __name__ == '__main__':
-    # app.run(debug=True)
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
+    # port = int(os.environ.get("PORT", 5000))
+    # app.run(host='0.0.0.0', port=port)
