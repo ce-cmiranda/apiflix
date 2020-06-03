@@ -4,11 +4,16 @@ from flask import Flask, request, json, render_template, make_response
 
 import pandas as pd
 
+
 def import_files():
+    # Bases iniciais
     # file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/IMDb%20movies.csv'
     # file_path_movies = 'databases/IMDb movies.csv'
+
+    #O caminho na web é utilizado para deploy, na máquina para desenvolvimento
     file_path_movies = 'https://raw.githubusercontent.com/ce-cmiranda/apiflix/master/databases/movies_clean.csv'
     # file_path_movies = 'databases/movies_clean.csv'
+
 
     movies = pd.read_csv(file_path_movies, index_col='imdb_title_id', parse_dates=['Data de Publicação'],
                                   dtype={'Ano': 'str'})
@@ -18,19 +23,21 @@ def import_files():
 
 
 def filter_by_string(string, df, column):
+    #filtra qualquer coluna com um parâmetro contendo string
     df = df[df[column].notnull()]
     df = df[df[column].str.contains(string)]
     return df
 
 
 def filter_by_date(min_date, max_date, df):
+    #Aplica filtro com base na data de publicação do filme
     df = df[df['Data de Publicação'].notnull()]
     df = df[(df['Data de Publicação'] >= min_date) & (df['Data de Publicação'] <= max_date)]
     return df
 
 
 def rank_by_param_movie_qtd(df, criteria):
-
+    #Faz ranqueamento conforme quantidade de filmes por critério definido pelo usuário
     df = df[df[criteria].notnull()]
     df[criteria] = df[criteria].str.split(', ')
     df = df.explode(criteria)
@@ -40,6 +47,9 @@ def rank_by_param_movie_qtd(df, criteria):
 
 
 def rank_param_by_criteria(df, param, criteria, qtd_votes=100000):
+    #faz ranquemaneto utilizando um critério numérico e um parâmetro para ranqueamento
+    #para evitar que filmes sem expressão fossem listados, colocamos um parâmetro de qtd de votos mínima
+    #o valor padrão é 100 mil votos, a ideia era criar uma interface com formulário para o usuário alterar
     df = df[[param, criteria]][df['Quantidade de Votos'] >= qtd_votes]
     df = df[df[param].notnull()]
 
@@ -67,6 +77,8 @@ def home_rank(criteria):
 @app.route('/rank/qtd/<criteria>/')
 @app.route('/rank/qtd/<criteria>/<int:page>')
 def rank_page_qtd(criteria, page = 1):
+    #a paginação está concluída, mas sem interface com o usuário
+    #se trocar a página direto no navegador vai funcionar
     per_page = 10
     initial = (page-1)*per_page
     final = initial + per_page
@@ -83,6 +95,8 @@ def rank_page_qtd(criteria, page = 1):
 @app.route('/rank/<criteria>/<param>/')
 @app.route('/rank/<criteria>/<param>/<int:page>')
 def rank_page_param(param, criteria, page=1):
+    #a paginação está concluída, mas sem interface com o usuário
+    #se trocar a página direto no navegador vai funcionar
     per_page = 10
     initial = (page-1)*per_page
     final = initial + per_page
@@ -100,6 +114,10 @@ def rank_page_param(param, criteria, page=1):
 @app.route('/filter/', methods=["GET", "POST"])
 @app.route('/filter/<int:page>/', methods=["GET", "POST"])
 def filter(page=1):
+    # Aqui não foi implementada funcionalidade a tempo para manter o filtro e ao mesmo tempo
+    # A paginação funcionar. Acredito que teria que usar parâmetros de filtro na url também
+    # Mas teria que pesquisar
+
     per_page = 10
     initial = (page-1)*per_page
     final = initial + per_page
@@ -125,6 +143,7 @@ def filter(page=1):
             result = filter_by_date(min_date, max_date, result)
 
         result = result.iloc[initial:final, :].to_dict(orient='index')
+        #num_results seria usado na implementação da paginação
         num_results = len(result)
         return render_template('/filter.html', result=result, num_results=num_results)
 
@@ -135,6 +154,11 @@ def filter(page=1):
 
 @app.route('/api/filter/', methods=["GET", "POST"])
 def filter_api():
+    #Não implementamos a tempo repostas de falha na pesquisa da API, então se é passado algum parâmetro que não existe
+    # é retornado erro interno de servidor
+    # Sobre o recebimento de valores pelas variáveis, acredito que tenha alguma forma mais fácil
+    # Tentamos implementar com country_name = data["País"] or, mas não deu certo inicialmente, como o tempo era curto
+    # implementamos de maneira menos elegante
     result = import_files()
 
     if request.method == "POST":
@@ -195,6 +219,7 @@ def filter_api():
 
 
 if __name__ == '__main__':
+    #separados com comentário versão de deploy e versão de desenvolvimento
     # app.run(debug=True)
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
