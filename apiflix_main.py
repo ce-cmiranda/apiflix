@@ -141,19 +141,19 @@ def filter_api():
         data = json.loads(request.data)
 
         try:
-            country_name = data["country"]
+            country_name = data["País"]
         except:
             country_name = ""
         try:
-            title = data["title"]
+            title = data["Título"]
         except:
             title = ""
         try:
-            cast = data["cast"]
+            cast = data["Atores"]
         except:
             cast = ""
         try:
-            genre = data["genre"]
+            genre = data["Gênero"]
         except:
             genre = ""
         try:
@@ -180,6 +180,8 @@ def filter_api():
         # result = result.to_dict(orient='index')
         result = result.iloc[0:100, :].to_json(orient='index')
     else:
+        result = filter_by_string("Germany", result, "País")
+        result = filter_by_string("Drama", result, "Gênero")
         message = result.iloc[0:100, :].to_json(orient='index')
         result = """Opções de parâmetros:<br>"País", "Título", "Atores", "Gênero", "min_date", "max_date"
         <br><br>
